@@ -1,25 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
+import React , { useState} from 'react';
 import './App.css';
+import Lists from "./Lists";
+import Details from './Details';
+import { Router } from '@reach/router';
+import ErrorBoundary from './ErrorBoundary';
+import  GlobalContext from "./GlobalContext";
 
 function App() {
+  
+ const [lists, setlists] = useState([
+  {id: 1 , name: "list1" , description : "This is list1"},
+  {id: 2 , name: "list2" , description : "This is list2"},
+  {id: 3 , name: "list3" , description : "This is list3"},
+  {id: 4 , name: "list4" , description : "This is list4"}
+ ]);
+
+
+ function handleDelete(itemId) {
+   let updatedList = lists.filter(list => list.id !==  itemId);
+    setlists(updatedList); 
+ }
+
+ const currentId = 0;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ErrorBoundary> 
+     <GlobalContext.Provider value= {{name: "kumar", age: 33}}>         
+     <Router>    
+       <Lists path="/"  lists={lists} />
+        <Details path="/:id"  id={currentId} items={lists} delete={() => handleDelete} />             
+    </Router>  
+    </GlobalContext.Provider>
+    </ErrorBoundary>
+       
   );
 }
 
